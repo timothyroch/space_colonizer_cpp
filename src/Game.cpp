@@ -1,7 +1,7 @@
 #include "Game.h"
 
 // Constructor
-Game::Game() : window(sf::VideoMode(800, 600), "Space Colonizer"), isRunning(true) {
+Game::Game() : window(sf::VideoMode({800, 600}), "Space Colonizer"), isRunning(true) {
     grid = new Grid(10, 10, 50); // 10x10 grid, 50px tiles
 }
 
@@ -21,13 +21,12 @@ void Game::run() {
 
 // Handle Events (including mouse clicks)
 void Game::processEvents() {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
+    while (auto event = window.pollEvent()) {
+        if (event->type == sf::Event::Closed) {
             isRunning = false;
         }
 
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+        if (event->type == sf::Event::MouseButtonPressed && event->mouseButton.button == sf::Mouse::Button::Left) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             sf::Vector2i tilePos = grid->getTileFromMouse(mousePos);
 
@@ -49,4 +48,3 @@ void Game::render() {
     grid->render(window);
     window.display();
 }
-
