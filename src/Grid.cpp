@@ -57,7 +57,7 @@ sf::Sprite sprite(buildingTextures.at(tile.buildingType));
 sprite.setPosition(tile.shape.getPosition());
 
 sf::Vector2f tileSizeVector(tile.shape.getSize());
-sf::Vector2u textureSize = sprite.getTexture()->getSize();
+sf::Vector2u textureSize = sprite.getTexture().getSize(); // ← FIXED
 
 // Calculate scaling factor
 sf::Vector2f scaleFactor(
@@ -65,9 +65,10 @@ sf::Vector2f scaleFactor(
     tileSizeVector.y / textureSize.y
 );
 
-sprite.setScale(scaleFactor);
+sprite.setScale(scaleFactor); // ← Pass a single Vector2f
 
 window.draw(sprite);
+
 
 
             }
