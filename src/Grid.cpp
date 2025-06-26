@@ -53,9 +53,20 @@ void Grid::render(sf::RenderWindow& window) {
 
             if (tile.buildingType != BuildingType::None) {
                 // Create a sprite from the stored texture
-                sf::Sprite sprite(buildingTextures.at(tile.buildingType));
-                sprite.setPosition(tile.shape.getPosition());
-                window.draw(sprite);
+sf::Sprite sprite(buildingTextures.at(tile.buildingType));
+sprite.setPosition(tile.shape.getPosition());
+
+sf::Vector2f tileSizeVector(tile.shape.getSize());
+sf::Vector2u textureSize = sprite.getTexture()->getSize();
+
+// Calculate scaling factor
+sprite.setScale(
+    tileSizeVector.x / textureSize.x,
+    tileSizeVector.y / textureSize.y
+);
+
+window.draw(sprite);
+
             }
         }
     }
