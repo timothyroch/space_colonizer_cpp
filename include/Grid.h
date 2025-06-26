@@ -3,10 +3,11 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "Building.h"
 
 struct Tile {
     sf::RectangleShape shape;
-    bool occupied;
+    Building building;
 
     Tile(float x, float y, float size);
 };
@@ -17,7 +18,7 @@ public:
 
     void render(sf::RenderWindow& window);
     bool isTileEmpty(int row, int col) const;
-    void occupyTile(int row, int col);
+    void placeBuilding(int row, int col, BuildingType buildingType);
     sf::Vector2i getTileFromMouse(sf::Vector2i mousePos);
 
 private:
@@ -27,4 +28,3 @@ private:
 };
 
 #endif
-
