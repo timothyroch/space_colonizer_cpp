@@ -76,10 +76,9 @@ void Game::update() {}
 // Draw the UI panel
 void Game::drawUI() {
     // Money text
-    sf::Text moneyText("Money: " + std::to_string(playerMoney), uiFont, 20);
+    sf::Text moneyText(uiFont, "Money: " + std::to_string(playerMoney), 20);
     moneyText.setFillColor(sf::Color::White);
     moneyText.setPosition(sf::Vector2f(520, 20));
-
     window.draw(moneyText);
 
     // Selected building text
@@ -91,17 +90,15 @@ void Game::drawUI() {
     else if (selectedBuilding == BuildingType::ResearchLab)
         selectedStr += "Research Lab (3)";
 
-    sf::Text selectionText(selectedStr, uiFont, 18);
+    sf::Text selectionText(uiFont, selectedStr, 18);
     selectionText.setFillColor(sf::Color::White);
     selectionText.setPosition(sf::Vector2f(520, 60));
-
     window.draw(selectionText);
 
     // Building costs text
-    sf::Text costText("Costs:\n1. Power Plant: 100\n2. Habitat: 150\n3. Research Lab: 200", uiFont, 16);
+    sf::Text costText(uiFont, "Costs:\n1. Power Plant: 100\n2. Habitat: 150\n3. Research Lab: 200", 16);
     costText.setFillColor(sf::Color::White);
     costText.setPosition(sf::Vector2f(520, 100));
-
     window.draw(costText);
 }
 
