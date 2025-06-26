@@ -1,10 +1,11 @@
 #include "Grid.h"
 
 // Tile constructor
-Tile::Tile(float x, float y, float size) : occupied(false) {
-    shape.setSize({ size - 1, size - 1 });            // small gap for grid lines
-    shape.setPosition({ x, y });                       // SFML 3 now takes a Vector2f
+Tile::Tile(float x, float y, float size) {
+    shape.setSize({ size - 1, size - 1 });  // Small gap for grid lines
+    shape.setPosition({ x, y });            // SFML 3 position format
     shape.setFillColor(sf::Color::Green);
+    building = Building(BuildingType::None);
 }
 
 // Grid constructor
@@ -21,24 +22,30 @@ Grid::Grid(int rows, int cols, float tileSize)
     }
 }
 
-// Draw all tiles
+// Draw all tiles and buildings
 void Grid::render(sf::RenderWindow& window) {
     for (const auto& row : tiles) {
         for (const auto& tile : row) {
             window.draw(tile.shape);
+            if (tile.building.type != BuildingType::None) {
+                window.draw(tile.building.sprite);
+            }
         }
     }
 }
 
 // Check if a tile is free
 bool Grid::isTileEmpty(int row, int col) const {
-    return !tiles[row][col].occupied;
+    return tiles[row][col].building.type == BuildingType::None;
 }
 
-// Mark a tile occupied and change its color
-void Grid::occupyTile(int row, int col) {
-    tiles[row][col].occupied = true;
-    tiles[row][col].shape.setFillColor(sf::Color::Blue);
+// Place a building of a specific type on the tile
+void Grid::placeBuilding(int row, int col, BuildingType buildingType) {
+    tiles[row][col].building = Building(buildingType);
+    tiles[row][col].building.setPosition(
+        tiles[row][col].shape.getPosition().x,
+        tiles[row][col].shape.getPosition().y
+    );
 }
 
 // Convert mouse position to tile indices
