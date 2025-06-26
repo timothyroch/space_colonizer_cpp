@@ -3,11 +3,13 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <map>
 #include "Building.h"
 
 struct Tile {
     sf::RectangleShape shape;
-    Building building;
+    BuildingType buildingType;
+    sf::Sprite buildingSprite;
 
     Tile(float x, float y, float size);
 };
@@ -23,8 +25,11 @@ public:
 
 private:
     std::vector<std::vector<Tile>> tiles;
+    std::map<BuildingType, sf::Texture> buildingTextures; // Central texture storage
     int rows, cols;
     float tileSize;
+
+    void loadBuildingTextures(); // Load all textures once
 };
 
 #endif
