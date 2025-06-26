@@ -9,7 +9,6 @@
 struct Tile {
     sf::RectangleShape shape;
     BuildingType buildingType;
-    sf::Sprite buildingSprite;
 
     Tile(float x, float y, float size);
 };
