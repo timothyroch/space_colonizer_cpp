@@ -1,11 +1,31 @@
 #include "Grid.h"
+#include <stdexcept>
 
 // Tile constructor
-Tile::Tile(float x, float y, float size) {
-    shape.setSize({ size - 1, size - 1 });  // Small gap for grid lines
-    shape.setPosition({ x, y });            // SFML 3 position format
+Tile::Tile(float x, float y, float size)
+: shape({ size - 1.f, size - 1.f })
+, buildingType(BuildingType::None)
+{
+    shape.setPosition({ x, y });
     shape.setFillColor(sf::Color::Green);
-    building = Building(BuildingType::None);
+}
+
+// Load textures for each building type
+void Grid::loadBuildingTextures() {
+    // Map building types to asset paths
+    std::map<BuildingType, std::string> paths = {
+        { BuildingType::PowerPlant,  "assets/powerplant.jpg" },
+        { BuildingType::Habitat,     "assets/habitat.jpg"    },
+        { BuildingType::ResearchLab, "assets/researchlab.jpg"}
+    };
+
+    for (auto& [type, path] : paths) {
+        sf::Texture tex;
+        if (!tex.loadFromFile(path)) {
+            throw std::runtime_error("Failed to load texture: " + path);
+        }
+        buildingTextures[type] = std::move(tex);
+    }
 }
 
 // Grid constructor
@@ -14,21 +34,28 @@ Grid::Grid(int rows, int cols, float tileSize)
 , cols(cols)
 , tileSize(tileSize)
 {
-    tiles.resize(rows, std::vector<Tile>(cols, Tile(0, 0, tileSize)));
-    for (int row = 0; row < rows; ++row) {
-        for (int col = 0; col < cols; ++col) {
-            tiles[row][col] = Tile(col * tileSize, row * tileSize, tileSize);
+    loadBuildingTextures();
+
+    tiles.resize(rows);
+    for (int r = 0; r < rows; ++r) {
+        tiles[r].reserve(cols);
+        for (int c = 0; c < cols; ++c) {
+            tiles[r].emplace_back(c * tileSize, r * tileSize, tileSize);
         }
     }
 }
 
-// Draw all tiles and buildings
+// Draw all tiles and any buildings
 void Grid::render(sf::RenderWindow& window) {
     for (const auto& row : tiles) {
         for (const auto& tile : row) {
             window.draw(tile.shape);
-            if (tile.building.type != BuildingType::None) {
-                window.draw(tile.building.sprite);
+
+            if (tile.buildingType != BuildingType::None) {
+                // Create a sprite from the stored texture
+                sf::Sprite sprite(buildingTextures.at(tile.buildingType));
+                sprite.setPosition(tile.shape.getPosition());
+                window.draw(sprite);
             }
         }
     }
@@ -36,16 +63,12 @@ void Grid::render(sf::RenderWindow& window) {
 
 // Check if a tile is free
 bool Grid::isTileEmpty(int row, int col) const {
-    return tiles[row][col].building.type == BuildingType::None;
+    return tiles[row][col].buildingType == BuildingType::None;
 }
 
 // Place a building of a specific type on the tile
-void Grid::placeBuilding(int row, int col, BuildingType buildingType) {
-    tiles[row][col].building = Building(buildingType);
-    tiles[row][col].building.setPosition(
-        tiles[row][col].shape.getPosition().x,
-        tiles[row][col].shape.getPosition().y
-    );
+void Grid::placeBuilding(int row, int col, BuildingType type) {
+    tiles[row][col].buildingType = type;
 }
 
 // Convert mouse position to tile indices
