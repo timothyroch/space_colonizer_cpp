@@ -1,8 +1,12 @@
 #include "Game.h"
+#include <optional> // for std::optional
 
 // Constructor
-Game::Game() : window(sf::VideoMode({800, 600}), "Space Colonizer"), isRunning(true) {
-    grid = new Grid(10, 10, 50); // 10x10 grid, 50px tiles
+Game::Game()
+: window(sf::VideoMode({800, 600}), "Space Colonizer")
+, isRunning(true)
+{
+    grid = new Grid(10, 10, 50); // 10×10 grid, each tile 50px
 }
 
 // Destructor
@@ -10,7 +14,7 @@ Game::~Game() {
     delete grid;
 }
 
-// Game Loop
+// Main game loop
 void Game::run() {
     while (isRunning) {
         processEvents();
@@ -19,23 +23,20 @@ void Game::run() {
     }
 }
 
-// Handle Events (including mouse clicks)
+// Handle SFML events
 void Game::processEvents() {
-    while (auto optEvent = window.pollEvent()) {
-        // SFML 3 uses std::optional<sf::Event>
-        sf::Event event = *optEvent;
-
-        if (std::holds_alternative<sf::Event::Closed>(event)) {
+    // pollEvent now returns std::optional<sf::Event>
+    while (const std::optional<sf::Event> event = window.pollEvent()) {
+        // Window close
+        if (event->is<sf::Event::Closed>()) {
             isRunning = false;
+            window.close();
         }
-
-        if (std::holds_alternative<sf::Event::MouseButtonPressed>(event)) {
-            auto mouseEvent = std::get<sf::Event::MouseButtonPressed>(event);
-
-            if (mouseEvent.button == sf::Mouse::Button::Left) {
+        // Mouse button pressed
+        else if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+            if (mousePressed->button == sf::Mouse::Button::Left) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
                 sf::Vector2i tilePos = grid->getTileFromMouse(mousePos);
-
                 if (tilePos.x != -1 && tilePos.y != -1 && grid->isTileEmpty(tilePos.x, tilePos.y)) {
                     grid->occupyTile(tilePos.x, tilePos.y);
                 }
@@ -44,12 +45,12 @@ void Game::processEvents() {
     }
 }
 
-// Update Game State (empty for now)
+// Update game logic (empty for now)
 void Game::update() {
-    // Placeholder for future updates
+    // future game-state updates
 }
 
-// Render the Game
+// Render everything
 void Game::render() {
     window.clear();
     grid->render(window);
