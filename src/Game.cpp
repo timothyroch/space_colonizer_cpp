@@ -4,20 +4,18 @@
 
 // Constructor
 Game::Game()
-: window(sf::VideoMode({1000, 600}), "Space Colonizer") // Wider window for UI
+: window(sf::VideoMode({1000, 600}), "Space Colonizer")
 , isRunning(true)
 , selectedBuilding(BuildingType::PowerPlant)
-, playerMoney(1000) // Starting money
+, playerMoney(1000)
 {
-    grid = new Grid(10, 10, 50); // 10×10 grid, each tile 50px
+    grid = new Grid(10, 10, 50);
 
-    // Set building costs
     buildingCosts[BuildingType::PowerPlant] = 100;
     buildingCosts[BuildingType::Habitat] = 150;
     buildingCosts[BuildingType::ResearchLab] = 200;
 
-    // Load UI font
-    if (!uiFont.loadFromFile("assets/arial.ttf")) {
+    if (!uiFont.openFromFile("assets/arial.ttf")) { // SFML 3 uses openFromFile
         std::cerr << "Failed to load font!" << std::endl;
     }
 }
@@ -39,12 +37,10 @@ void Game::run() {
 // Handle SFML events
 void Game::processEvents() {
     while (const std::optional<sf::Event> event = window.pollEvent()) {
-        // Window close
         if (event->is<sf::Event::Closed>()) {
             isRunning = false;
             window.close();
         }
-        // Keyboard input to change building selection
         else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
             if (keyPressed->code == sf::Keyboard::Key::Num1) {
                 selectedBuilding = BuildingType::PowerPlant;
@@ -54,7 +50,6 @@ void Game::processEvents() {
                 selectedBuilding = BuildingType::ResearchLab;
             }
         }
-        // Mouse button pressed to place building
         else if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
             if (mousePressed->button == sf::Mouse::Button::Left) {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -75,25 +70,19 @@ void Game::processEvents() {
     }
 }
 
-// Update game logic (placeholder)
-void Game::update() {
-    // Future resource production can go here
-}
+// Placeholder for future updates
+void Game::update() {}
 
 // Draw the UI panel
 void Game::drawUI() {
-    // Draw player's money
-    sf::Text moneyText;
-    moneyText.setFont(uiFont);
-    moneyText.setString("Money: " + std::to_string(playerMoney));
-    moneyText.setCharacterSize(20);
+    // Money text
+    sf::Text moneyText("Money: " + std::to_string(playerMoney), uiFont, 20);
     moneyText.setFillColor(sf::Color::White);
-    moneyText.setPosition(520, 20); // Position in the right panel
+    moneyText.setPosition(sf::Vector2f(520, 20));
+
     window.draw(moneyText);
 
-    // Draw building selection
-    sf::Text selectionText;
-    selectionText.setFont(uiFont);
+    // Selected building text
     std::string selectedStr = "Selected: ";
     if (selectedBuilding == BuildingType::PowerPlant)
         selectedStr += "Power Plant (1)";
@@ -102,19 +91,17 @@ void Game::drawUI() {
     else if (selectedBuilding == BuildingType::ResearchLab)
         selectedStr += "Research Lab (3)";
 
-    selectionText.setString(selectedStr);
-    selectionText.setCharacterSize(18);
+    sf::Text selectionText(selectedStr, uiFont, 18);
     selectionText.setFillColor(sf::Color::White);
-    selectionText.setPosition(520, 60);
+    selectionText.setPosition(sf::Vector2f(520, 60));
+
     window.draw(selectionText);
 
-    // Draw building costs
-    sf::Text costText;
-    costText.setFont(uiFont);
-    costText.setCharacterSize(16);
+    // Building costs text
+    sf::Text costText("Costs:\n1. Power Plant: 100\n2. Habitat: 150\n3. Research Lab: 200", uiFont, 16);
     costText.setFillColor(sf::Color::White);
-    costText.setPosition(520, 100);
-    costText.setString("Costs:\n1. Power Plant: 100\n2. Habitat: 150\n3. Research Lab: 200");
+    costText.setPosition(sf::Vector2f(520, 100));
+
     window.draw(costText);
 }
 
@@ -122,6 +109,6 @@ void Game::drawUI() {
 void Game::render() {
     window.clear();
     grid->render(window);
-    drawUI(); // Draw the side interface
+    drawUI();
     window.display();
 }
