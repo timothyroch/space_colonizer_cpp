@@ -60,12 +60,15 @@ sf::Vector2f tileSizeVector(tile.shape.getSize());
 sf::Vector2u textureSize = sprite.getTexture()->getSize();
 
 // Calculate scaling factor
-sprite.setScale(
+sf::Vector2f scaleFactor(
     tileSizeVector.x / textureSize.x,
     tileSizeVector.y / textureSize.y
 );
 
+sprite.setScale(scaleFactor);
+
 window.draw(sprite);
+
 
             }
         }
