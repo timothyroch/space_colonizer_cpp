@@ -1,35 +1,24 @@
-#include "Building.h"
+bool Building::loadTexture() {
+    std::string path;
 
-Building::Building(BuildingType type) : type(type) {
     switch (type) {
         case BuildingType::PowerPlant:
-            name = "Power Plant";
-            cost = 100;
+            path = "assets/powerplant.jpg";
             break;
         case BuildingType::Habitat:
-            name = "Habitat";
-            cost = 150;
+            path = "assets/habitat.jpg";
             break;
         case BuildingType::ResearchLab:
-            name = "Research Lab";
-            cost = 200;
+            path = "assets/researchlab.jpg";
             break;
         default:
-            name = "None";
-            cost = 0;
-            break;
+            return false;
     }
-}
 
-sf::Color Building::getColor() const {
-    switch (type) {
-        case BuildingType::PowerPlant:
-            return sf::Color::Yellow;
-        case BuildingType::Habitat:
-            return sf::Color::Magenta;
-        case BuildingType::ResearchLab:
-            return sf::Color::Cyan;
-        default:
-            return sf::Color::Green;
+    if (texture.loadFromFile(path)) {
+        sprite.setTexture(texture);
+        return true;
     }
+
+    return false;
 }
