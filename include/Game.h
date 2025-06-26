@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Grid.h"
+#include "Building.h"
 
 class Game {
 public:
@@ -19,7 +20,8 @@ private:
     sf::RenderWindow window;  // Game window
     Grid* grid;               // Pointer to the grid system
     bool isRunning;           // Game loop control flag
+
+    BuildingType selectedBuilding; // NEW: currently selected building type
 };
 
 #endif
-
