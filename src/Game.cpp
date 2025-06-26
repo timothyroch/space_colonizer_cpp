@@ -34,11 +34,11 @@ void Game::processEvents() {
         }
         // Keyboard input to change building selection
         else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            if (keyPressed->code == sf::Keyboard::Num1) {
+            if (keyPressed->code == sf::Keyboard::Key::Num1) {
                 selectedBuilding = BuildingType::PowerPlant;
-            } else if (keyPressed->code == sf::Keyboard::Num2) {
+            } else if (keyPressed->code == sf::Keyboard::Key::Num2) {
                 selectedBuilding = BuildingType::Habitat;
-            } else if (keyPressed->code == sf::Keyboard::Num3) {
+            } else if (keyPressed->code == sf::Keyboard::Key::Num3) {
                 selectedBuilding = BuildingType::ResearchLab;
             }
         }
