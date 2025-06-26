@@ -21,17 +21,24 @@ void Game::run() {
 
 // Handle Events (including mouse clicks)
 void Game::processEvents() {
-    while (auto event = window.pollEvent()) {
-        if (event->type == sf::Event::Closed) {
+    while (auto optEvent = window.pollEvent()) {
+        // SFML 3 uses std::optional<sf::Event>
+        sf::Event event = *optEvent;
+
+        if (std::holds_alternative<sf::Event::Closed>(event)) {
             isRunning = false;
         }
 
-        if (event->type == sf::Event::MouseButtonPressed && event->mouseButton.button == sf::Mouse::Button::Left) {
-            sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-            sf::Vector2i tilePos = grid->getTileFromMouse(mousePos);
+        if (std::holds_alternative<sf::Event::MouseButtonPressed>(event)) {
+            auto mouseEvent = std::get<sf::Event::MouseButtonPressed>(event);
 
-            if (tilePos.x != -1 && tilePos.y != -1 && grid->isTileEmpty(tilePos.x, tilePos.y)) {
-                grid->occupyTile(tilePos.x, tilePos.y);
+            if (mouseEvent.button == sf::Mouse::Button::Left) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                sf::Vector2i tilePos = grid->getTileFromMouse(mousePos);
+
+                if (tilePos.x != -1 && tilePos.y != -1 && grid->isTileEmpty(tilePos.x, tilePos.y)) {
+                    grid->occupyTile(tilePos.x, tilePos.y);
+                }
             }
         }
     }
