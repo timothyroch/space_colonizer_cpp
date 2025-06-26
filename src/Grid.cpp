@@ -14,9 +14,9 @@ Tile::Tile(float x, float y, float size)
 void Grid::loadBuildingTextures() {
     // Map building types to asset paths
     std::map<BuildingType, std::string> paths = {
-        { BuildingType::PowerPlant,  "assets/powerplant.jpg" },
-        { BuildingType::Habitat,     "assets/habitat.jpg"    },
-        { BuildingType::ResearchLab, "assets/researchlab.jpg"}
+        { BuildingType::PowerPlant,  "assets/c79a2673-280c-43db-9fd3-83edc3ade4ab.jpg" },
+        { BuildingType::Habitat,     "assets/c4d6018f-428c-45e9-b12e-cb67c8f44a24.jpg" },
+        { BuildingType::ResearchLab, "assets/19911.jpg" }
     };
 
     for (auto& [type, path] : paths) {
